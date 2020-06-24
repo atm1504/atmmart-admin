@@ -2,7 +2,6 @@ import 'package:atmmartadmin/db/brand.dart';
 import 'package:atmmartadmin/db/category.dart';
 import 'package:atmmartadmin/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 enum Page { dashboard, manage }
 
@@ -270,9 +269,11 @@ class _AdminState extends State<Admin> {
         child: TextFormField(
           controller: categoryController,
           validator: (value) {
+            // ignore: missing_return, missing_return
             if (value.length <= 0) {
               return 'Category cannot be empty';
             }
+            return null;
           },
           decoration: InputDecoration(hintText: "Add category"),
         ),
@@ -311,6 +312,7 @@ class _AdminState extends State<Admin> {
             if (value.isEmpty) {
               return 'category cannot be empty';
             }
+            return null;
           },
           decoration: InputDecoration(hintText: "add brand"),
         ),
