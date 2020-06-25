@@ -1,3 +1,4 @@
+import 'package:atmmartadmin/screens/admin.dart';
 import 'package:atmmartadmin/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -20,9 +21,15 @@ class _AddProductState extends State<AddProduct> {
           "Add Product",
           style: TextStyle(color: white),
         ),
-        leading: Icon(
-          Icons.close,
-          color: white,
+        leading: InkWell(
+          child: Icon(
+            Icons.close,
+            color: white,
+          ),
+          onTap: () {
+            Navigator.pop(
+                context, MaterialPageRoute(builder: (_) => (Admin())));
+          },
         ),
       ),
       body: Form(

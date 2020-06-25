@@ -1,13 +1,21 @@
+import 'package:atmmartadmin/utils/constants.dart';
+import 'package:atmmartadmin/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uuid/uuid.dart';
+import 'dart:convert';
 
 class BrandService {
   Firestore _firestore = Firestore.instance;
 
   void createBrand(String name) {
-    var id = Uuid();
-    String brandId = id.v1();
+    String brandId = getUuid();
 
-    _firestore.collection('brands').document(brandId).setData({'brand': name});
+    _firestore.collection(BRANDS).document(brandId).setData({'brand': name});
+  }
+
+  Future<List<DocumentSnapshot>> getBrands() {
+    _firestore.collection(BRANDS).getDocuments().then((snaps) {
+      print(snaps.documents.length);
+      return snaps.documents;
+    });
   }
 }
