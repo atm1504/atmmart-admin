@@ -1,5 +1,6 @@
 import 'package:atmmartadmin/db/brand.dart';
 import 'package:atmmartadmin/db/category.dart';
+import 'package:atmmartadmin/screens/add_product.dart';
 import 'package:atmmartadmin/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -206,7 +207,10 @@ class _AdminState extends State<Admin> {
                   "Add product",
                   style: TextStyle(color: Colors.black),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => AddProduct()));
+                },
               ),
               Divider(
                 color: Colors.red,
