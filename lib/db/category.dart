@@ -11,7 +11,7 @@ class CategoryService {
     _firestore
         .collection(CATEGORIES)
         .document(categoryId)
-        .setData({'category': name});
+        .setData({CATEGORY: name});
   }
 
   Future<List<DocumentSnapshot>> getCategories() {

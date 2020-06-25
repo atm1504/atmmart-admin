@@ -1,5 +1,9 @@
+import 'package:atmmartadmin/db/brand.dart';
+import 'package:atmmartadmin/db/category.dart';
 import 'package:atmmartadmin/screens/admin.dart';
 import 'package:atmmartadmin/utils/colors.dart';
+import 'package:atmmartadmin/utils/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
@@ -9,8 +13,78 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
+  // Forms and controllers
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController productNameController = TextEditingController();
+
+  // Class initialization
+  BrandService _brandService = BrandService();
+  CategoryService _categoryService = CategoryService();
+
+  // List of brands and categories
+  List<DocumentSnapshot> brands = <DocumentSnapshot>[];
+  List<DocumentSnapshot> categories = <DocumentSnapshot>[];
+  List<DropdownMenuItem<String>> categoriesDropDown =
+      <DropdownMenuItem<String>>[];
+  List<DropdownMenuItem<String>> brandsDropDown = <DropdownMenuItem<String>>[];
+  String _currentCategory;
+  String _currentBrand;
+
+  @override
+  void initState() {
+    super.initState();
+    _getBrands();
+    _getCategories();
+  }
+
+  List<DropdownMenuItem<String>> getCategoriesDropdown() {
+    List<DropdownMenuItem<String>> items = new List();
+    for (int i = 0; i < categories.length; i++) {
+      setState(() {
+        items.insert(
+            0,
+            DropdownMenuItem(
+                child: Text(categories[i].data[CATEGORY]),
+                value: categories[i].data[CATEGORY]));
+      });
+    }
+    return items;
+  }
+
+  List<DropdownMenuItem<String>> getBrandsDropDown() {
+    List<DropdownMenuItem<String>> items = new List();
+    for (int i = 0; i < brands.length; i++) {
+      setState(() {
+        items.insert(
+            0,
+            DropdownMenuItem(
+                child: Text(brands[i].data[BRAND]),
+                value: brands[i].data[BRAND]));
+      });
+    }
+    return items;
+  }
+
+  _getCategories() async {
+    List<DocumentSnapshot> data = await _categoryService.getCategories();
+    print(data.length);
+    setState(() {
+      categories = data;
+      categoriesDropDown = getCategoriesDropdown();
+      _currentCategory = categories[0].data[CATEGORY];
+    });
+  }
+
+  _getBrands() async {
+    List<DocumentSnapshot> data = await _brandService.getBrands();
+    print(data.length);
+    setState(() {
+      brands = data;
+      brandsDropDown = getBrandsDropDown();
+      _currentBrand = brands[0].data[BRAND];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

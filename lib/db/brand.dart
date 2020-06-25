@@ -9,7 +9,7 @@ class BrandService {
   void createBrand(String name) {
     String brandId = getUuid();
 
-    _firestore.collection(BRANDS).document(brandId).setData({'brand': name});
+    _firestore.collection(BRANDS).document(brandId).setData({BRAND: name});
   }
 
   Future<List<DocumentSnapshot>> getBrands() {
