@@ -141,8 +141,15 @@ class _AddProductState extends State<AddProduct> {
     }
   }
 
-  void _selectImage(int imageNumber) async {
-    PickedFile tempImg = await _picker.getImage(source: ImageSource.gallery);
+  // Select image from file or camera
+  void _selectImage(int imageNumber, String sourceFrom) async {
+    PickedFile tempImg;
+    if (sourceFrom == "gallery") {
+      tempImg = await _picker.getImage(source: ImageSource.gallery);
+    } else {
+      tempImg = await _picker.getImage(source: ImageSource.camera);
+    }
+
     switch (imageNumber) {
       case 1:
         setState(() => _image1 = tempImg);
@@ -156,9 +163,9 @@ class _AddProductState extends State<AddProduct> {
     }
   }
 
-  // First Image box
-  Widget _displayChild1() {
-    if (_image1 == null) {
+// Display image
+  Widget _displayChild(PickedFile image) {
+    if (image == null) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(20, 80, 20, 80),
         child: Icon(
@@ -168,9 +175,10 @@ class _AddProductState extends State<AddProduct> {
       );
     } else {
       return Image.file(
-        File(_image1.path),
+        File(image.path),
         fit: BoxFit.fill,
         width: double.infinity,
+        height: double.infinity,
       );
     }
   }
@@ -210,12 +218,12 @@ class _AddProductState extends State<AddProduct> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: OutlineButton(
-                        borderSide:
-                            BorderSide(color: grey.withOpacity(0.8), width: 5),
+                        borderSide: BorderSide(
+                            color: grey.withOpacity(0.8), width: 2.5),
                         onPressed: () {
-                          _selectImage(1);
+                          _selectImage(1, "gallery");
                         },
-                        child: _displayChild1(),
+                        child: _displayChild(_image1),
                       ),
                     ),
                   ),
@@ -223,34 +231,24 @@ class _AddProductState extends State<AddProduct> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: OutlineButton(
-                        borderSide:
-                            BorderSide(color: grey.withOpacity(0.8), width: 5),
-                        onPressed: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 80, 20, 80),
-                          child: Icon(
-                            Icons.add,
-                            color: grey,
-                          ),
-                        ),
-                      ),
+                          borderSide: BorderSide(
+                              color: grey.withOpacity(0.8), width: 2.5),
+                          onPressed: () {
+                            _selectImage(2, "gallery");
+                          },
+                          child: _displayChild(_image2)),
                     ),
                   ),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: OutlineButton(
-                        borderSide:
-                            BorderSide(color: grey.withOpacity(0.8), width: 5),
-                        onPressed: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 80, 20, 80),
-                          child: Icon(
-                            Icons.add,
-                            color: grey,
-                          ),
-                        ),
-                      ),
+                          borderSide: BorderSide(
+                              color: grey.withOpacity(0.8), width: 2.5),
+                          onPressed: () {
+                            _selectImage(3, "gallery");
+                          },
+                          child: _displayChild(_image3)),
                     ),
                   ),
                 ],
