@@ -3,10 +3,10 @@ import 'package:atmmartadmin/db/category.dart';
 import 'package:atmmartadmin/screens/admin.dart';
 import 'package:atmmartadmin/utils/colors.dart';
 import 'package:atmmartadmin/utils/constants.dart';
-import 'package:atmmartadmin/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class AddProduct extends StatefulWidget {
   @override
@@ -285,6 +285,28 @@ class _AddProductState extends State<AddProduct> {
                 ),
               ],
             ),
+            TypeAheadField(
+              textFieldConfiguration: TextFieldConfiguration(
+                  autofocus: false,
+                  style: DefaultTextStyle.of(context)
+                      .style
+                      .copyWith(fontStyle: FontStyle.italic),
+                  decoration: InputDecoration(border: OutlineInputBorder())),
+              suggestionsCallback: (pattern) async {
+                return await _categoryService.getSuggestions(pattern);
+              },
+              itemBuilder: (context, suggestion) {
+                return ListTile(
+                  leading: Icon(Icons.category),
+                  title: Text(suggestion[CATEGORY]),
+//                  subtitle: Text('\$${suggestion['price']}'),
+                );
+              },
+              onSuggestionSelected: (suggestion) {
+//                Navigator.of(context).push(MaterialPageRoute(
+//                    builder: (context) => ProductPage(product: suggestion)));
+              },
+            )
           ],
         ),
       ),
