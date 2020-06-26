@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class AddProduct extends StatefulWidget {
   @override
@@ -141,6 +142,41 @@ class _AddProductState extends State<AddProduct> {
     }
   }
 
+  void _selectImageSource(int imageNumber) {
+    Alert(
+      context: context,
+      title: "Image Source",
+      desc: "Select Image from Gallery or Capture using Camera",
+      buttons: [
+        DialogButton(
+          child: Text(
+            "GALLERY",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+            _selectImage(imageNumber, "gallery");
+          },
+          color: Color.fromRGBO(0, 179, 134, 1.0),
+        ),
+        DialogButton(
+          child: Text(
+            "CAMERA",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+            _selectImage(imageNumber, "camera");
+          },
+          gradient: LinearGradient(colors: [
+            Color.fromRGBO(116, 116, 191, 1.0),
+            Color.fromRGBO(52, 138, 199, 1.0)
+          ]),
+        )
+      ],
+    ).show();
+  }
+
   // Select image from file or camera
   void _selectImage(int imageNumber, String sourceFrom) async {
     PickedFile tempImg;
@@ -221,7 +257,8 @@ class _AddProductState extends State<AddProduct> {
                         borderSide: BorderSide(
                             color: grey.withOpacity(0.8), width: 2.5),
                         onPressed: () {
-                          _selectImage(1, "gallery");
+//                          _selectImage(1, "gallery");
+                          _selectImageSource(1);
                         },
                         child: _displayChild(_image1),
                       ),
@@ -234,7 +271,7 @@ class _AddProductState extends State<AddProduct> {
                           borderSide: BorderSide(
                               color: grey.withOpacity(0.8), width: 2.5),
                           onPressed: () {
-                            _selectImage(2, "gallery");
+                            _selectImageSource(2);
                           },
                           child: _displayChild(_image2)),
                     ),
@@ -246,7 +283,7 @@ class _AddProductState extends State<AddProduct> {
                           borderSide: BorderSide(
                               color: grey.withOpacity(0.8), width: 2.5),
                           onPressed: () {
-                            _selectImage(3, "gallery");
+                            _selectImageSource(3);
                           },
                           child: _displayChild(_image3)),
                     ),
