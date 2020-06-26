@@ -16,7 +16,9 @@ class AddProduct extends StatefulWidget {
 class _AddProductState extends State<AddProduct> {
   // Forms and controllers
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController productNameController = TextEditingController();
+  TextEditingController _productNameController = TextEditingController();
+  TextEditingController _categorySuggestionController = TextEditingController();
+  TextEditingController _brandSuggestionController = TextEditingController();
 
   // Class initialization
   BrandService _brandService = BrandService();
@@ -31,8 +33,8 @@ class _AddProductState extends State<AddProduct> {
   List<DropdownMenuItem<String>> categoriesDropDown =
       <DropdownMenuItem<String>>[];
   List<DropdownMenuItem<String>> brandsDropDown = <DropdownMenuItem<String>>[];
-  String _currentCategory;
-  String _currentBrand;
+  String _currentCategory = "";
+  String _currentBrand = "";
 
   @override
   void initState() {
@@ -76,6 +78,7 @@ class _AddProductState extends State<AddProduct> {
       categories = data;
       categoriesDropDown = getCategoriesDropdown();
       _currentCategory = categories[0].data[CATEGORY];
+      _categorySuggestionController.text = _currentCategory;
     });
   }
 
@@ -86,18 +89,21 @@ class _AddProductState extends State<AddProduct> {
       brands = data;
       brandsDropDown = getBrandsDropDown();
       _currentBrand = brands[0].data[BRAND];
+      _brandSuggestionController.text = _currentBrand;
     });
   }
 
   changeSelectedCategory(String selectedCategory) {
     setState(() {
       _currentCategory = selectedCategory;
+      _categorySuggestionController.text = selectedCategory;
     });
   }
 
   changeSelectedBrand(String selectedBrand) {
     setState(() {
       _currentBrand = selectedBrand;
+      _brandSuggestionController.text = selectedBrand;
     });
   }
 
@@ -224,7 +230,7 @@ class _AddProductState extends State<AddProduct> {
                     ),
                   ),
                   TextFormField(
-                    controller: productNameController,
+                    controller: _productNameController,
                     decoration: InputDecoration(
                       hintText: "Product Name",
                       border: OutlineInputBorder(
@@ -248,6 +254,7 @@ class _AddProductState extends State<AddProduct> {
             Row(
               children: <Widget>[
                 Expanded(
+                  flex: 5,
                   child: Row(
                     children: <Widget>[
                       Padding(
@@ -266,6 +273,43 @@ class _AddProductState extends State<AddProduct> {
                   ),
                 ),
                 Expanded(
+                  flex: 5,
+                  child: TypeAheadField(
+                    textFieldConfiguration: TextFieldConfiguration(
+                      controller: _categorySuggestionController,
+                      autofocus: false,
+                      cursorColor: orange900,
+                      style: TextStyle(fontSize: 14),
+                      decoration: InputDecoration(
+                          labelText: "Category Selected",
+                          hintText: _currentCategory),
+                    ),
+                    suggestionsCallback: (pattern) async {
+                      return await _categoryService
+                          .getCategorySuggestions(pattern);
+                    },
+                    suggestionsBoxDecoration:
+                        SuggestionsBoxDecoration(elevation: 0.2),
+                    itemBuilder: (context, suggestion) {
+                      return ListTile(
+                        leading: Icon(Icons.category),
+                        title: Text(suggestion[CATEGORY]),
+                      );
+                    },
+                    onSuggestionSelected: (suggestion) {
+                      setState(() {
+                        print(suggestion);
+                        _currentCategory = suggestion[CATEGORY];
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  flex: 5,
                   child: Row(
                     children: <Widget>[
                       Padding(
@@ -283,30 +327,38 @@ class _AddProductState extends State<AddProduct> {
                     ],
                   ),
                 ),
+                Expanded(
+                  flex: 5,
+                  child: TypeAheadField(
+                    textFieldConfiguration: TextFieldConfiguration(
+                      controller: _brandSuggestionController,
+                      autofocus: false,
+                      cursorColor: orange900,
+                      style: TextStyle(fontSize: 14),
+                      decoration: InputDecoration(
+                          labelText: "Brand Selected", hintText: _currentBrand),
+                    ),
+                    suggestionsCallback: (pattern) async {
+                      return await _brandService.getBrandSuggestions(pattern);
+                    },
+                    suggestionsBoxDecoration:
+                        SuggestionsBoxDecoration(elevation: 0.2),
+                    itemBuilder: (context, suggestion) {
+                      return ListTile(
+                        leading: Icon(Icons.category),
+                        title: Text(suggestion[BRAND]),
+                      );
+                    },
+                    onSuggestionSelected: (suggestion) {
+                      setState(() {
+                        print(suggestion);
+                        _currentBrand = suggestion[BRAND];
+                      });
+                    },
+                  ),
+                ),
               ],
             ),
-            TypeAheadField(
-              textFieldConfiguration: TextFieldConfiguration(
-                  autofocus: false,
-                  style: DefaultTextStyle.of(context)
-                      .style
-                      .copyWith(fontStyle: FontStyle.italic),
-                  decoration: InputDecoration(border: OutlineInputBorder())),
-              suggestionsCallback: (pattern) async {
-                return await _categoryService.getSuggestions(pattern);
-              },
-              itemBuilder: (context, suggestion) {
-                return ListTile(
-                  leading: Icon(Icons.category),
-                  title: Text(suggestion[CATEGORY]),
-//                  subtitle: Text('\$${suggestion['price']}'),
-                );
-              },
-              onSuggestionSelected: (suggestion) {
-//                Navigator.of(context).push(MaterialPageRoute(
-//                    builder: (context) => ProductPage(product: suggestion)));
-              },
-            )
           ],
         ),
       ),
