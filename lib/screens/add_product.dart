@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:atmmartadmin/db/brand.dart';
 import 'package:atmmartadmin/db/category.dart';
 import 'package:atmmartadmin/screens/admin.dart';
@@ -5,6 +6,7 @@ import 'package:atmmartadmin/utils/colors.dart';
 import 'package:atmmartadmin/utils/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
@@ -24,6 +26,7 @@ class _AddProductState extends State<AddProduct> {
   // Class initialization
   BrandService _brandService = BrandService();
   CategoryService _categoryService = CategoryService();
+  ImagePicker _picker = ImagePicker();
 
   // Custom input validators
   bool isProductNameOk = true;
@@ -37,6 +40,9 @@ class _AddProductState extends State<AddProduct> {
   List<String> selectedSizes = <String>[];
   String _currentCategory = "";
   String _currentBrand = "";
+  PickedFile _image1;
+  PickedFile _image2;
+  PickedFile _image3;
 
   @override
   void initState() {
@@ -109,6 +115,7 @@ class _AddProductState extends State<AddProduct> {
     });
   }
 
+  // Product name validation
   productNameChangedController(String name) {
     if (name.length > 20 || name.length == 0) {
       setState(() {
@@ -121,6 +128,7 @@ class _AddProductState extends State<AddProduct> {
     }
   }
 
+  // For selecting the sizes of the product
   void changeSelectedSize(String size) {
     if (selectedSizes.contains(size)) {
       setState(() {
@@ -130,6 +138,40 @@ class _AddProductState extends State<AddProduct> {
       setState(() {
         selectedSizes.insert(0, size);
       });
+    }
+  }
+
+  void _selectImage(int imageNumber) async {
+    PickedFile tempImg = await _picker.getImage(source: ImageSource.gallery);
+    switch (imageNumber) {
+      case 1:
+        setState(() => _image1 = tempImg);
+        break;
+      case 2:
+        setState(() => _image2 = tempImg);
+        break;
+      case 3:
+        setState(() => _image3 = tempImg);
+        break;
+    }
+  }
+
+  // First Image box
+  Widget _displayChild1() {
+    if (_image1 == null) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(20, 80, 20, 80),
+        child: Icon(
+          Icons.add,
+          color: grey,
+        ),
+      );
+    } else {
+      return Image.file(
+        File(_image1.path),
+        fit: BoxFit.fill,
+        width: double.infinity,
+      );
     }
   }
 
@@ -170,14 +212,10 @@ class _AddProductState extends State<AddProduct> {
                       child: OutlineButton(
                         borderSide:
                             BorderSide(color: grey.withOpacity(0.8), width: 5),
-                        onPressed: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 80, 20, 80),
-                          child: Icon(
-                            Icons.add,
-                            color: grey,
-                          ),
-                        ),
+                        onPressed: () {
+                          _selectImage(1);
+                        },
+                        child: _displayChild1(),
                       ),
                     ),
                   ),
@@ -220,7 +258,7 @@ class _AddProductState extends State<AddProduct> {
             ),
             // TextField to take product name
             Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 5, 8, 5),
+              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
