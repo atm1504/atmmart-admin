@@ -251,114 +251,141 @@ class _AddProductState extends State<AddProduct> {
                 ],
               ),
             ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 5,
-                  child: Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'Category: ',
-                          style: TextStyle(color: red),
+            Container(
+              height: 50,
+              color: Colors.amberAccent[100],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    flex: 5,
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Category: ',
+                            style: TextStyle(color: red),
+                          ),
                         ),
-                      ),
-                      DropdownButton(
-                        value: _currentCategory,
-                        items: categoriesDropDown,
-                        onChanged: changeSelectedCategory,
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: TypeAheadField(
-                    textFieldConfiguration: TextFieldConfiguration(
-                      controller: _categorySuggestionController,
-                      autofocus: false,
-                      cursorColor: orange900,
-                      style: TextStyle(fontSize: 14),
-                      decoration: InputDecoration(
-                          labelText: "Category Selected",
-                          hintText: _currentCategory),
-                    ),
-                    suggestionsCallback: (pattern) async {
-                      return await _categoryService
-                          .getCategorySuggestions(pattern);
-                    },
-                    suggestionsBoxDecoration:
-                        SuggestionsBoxDecoration(elevation: 0.2),
-                    itemBuilder: (context, suggestion) {
-                      return ListTile(
-                        leading: Icon(Icons.category),
-                        title: Text(suggestion[CATEGORY]),
-                      );
-                    },
-                    onSuggestionSelected: (suggestion) {
-                      setState(() {
-                        print(suggestion);
-                        _currentCategory = suggestion[CATEGORY];
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 5,
-                  child: Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'Brand: ',
-                          style: TextStyle(color: red),
+                        DropdownButton(
+                          value: _currentCategory,
+                          items: categoriesDropDown,
+                          onChanged: changeSelectedCategory,
                         ),
-                      ),
-                      DropdownButton(
-                        value: _currentBrand,
-                        items: brandsDropDown,
-                        onChanged: changeSelectedBrand,
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: TypeAheadField(
-                    textFieldConfiguration: TextFieldConfiguration(
-                      controller: _brandSuggestionController,
-                      autofocus: false,
-                      cursorColor: orange900,
-                      style: TextStyle(fontSize: 14),
-                      decoration: InputDecoration(
-                          labelText: "Brand Selected", hintText: _currentBrand),
+                      ],
                     ),
-                    suggestionsCallback: (pattern) async {
-                      return await _brandService.getBrandSuggestions(pattern);
-                    },
-                    suggestionsBoxDecoration:
-                        SuggestionsBoxDecoration(elevation: 0.2),
-                    itemBuilder: (context, suggestion) {
-                      return ListTile(
-                        leading: Icon(Icons.category),
-                        title: Text(suggestion[BRAND]),
-                      );
-                    },
-                    onSuggestionSelected: (suggestion) {
-                      setState(() {
-                        print(suggestion);
-                        _currentBrand = suggestion[BRAND];
-                      });
-                    },
                   ),
-                ),
-              ],
+                  Expanded(
+                    flex: 5,
+                    child: TypeAheadField(
+                      textFieldConfiguration: TextFieldConfiguration(
+                        controller: _categorySuggestionController,
+                        autofocus: false,
+                        cursorColor: orange900,
+                        style: TextStyle(fontSize: 14),
+                        decoration: InputDecoration(
+                            labelText: "Category Selected",
+                            hintText: _currentCategory),
+                      ),
+                      suggestionsCallback: (pattern) async {
+                        return await _categoryService
+                            .getCategorySuggestions(pattern);
+                      },
+                      suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                          elevation: 0.2,
+                          borderRadius: BorderRadius.circular(3),
+                          color: grey200),
+                      itemBuilder: (context, suggestion) {
+                        return ListTile(
+                          leading: Icon(Icons.category),
+                          title: Text(suggestion[CATEGORY]),
+                        );
+                      },
+                      onSuggestionSelected: (suggestion) {
+                        setState(() {
+                          print(suggestion);
+                          _currentCategory = suggestion[CATEGORY];
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              height: 50,
+              color: Colors.amberAccent[100],
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 5,
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Brand: ',
+                            style: TextStyle(color: red),
+                          ),
+                        ),
+                        DropdownButton(
+                          value: _currentBrand,
+                          items: brandsDropDown,
+                          onChanged: changeSelectedBrand,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: TypeAheadField(
+                      textFieldConfiguration: TextFieldConfiguration(
+                        controller: _brandSuggestionController,
+                        autofocus: false,
+                        cursorColor: orange900,
+                        style: TextStyle(fontSize: 14),
+                        decoration: InputDecoration(
+                            labelText: "Brand Selected",
+                            hintText: _currentBrand),
+                      ),
+                      suggestionsCallback: (pattern) async {
+                        return await _brandService.getBrandSuggestions(pattern);
+                      },
+                      suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                          elevation: 0.2,
+                          borderRadius: BorderRadius.circular(3),
+                          color: grey200),
+                      itemBuilder: (context, suggestion) {
+                        return ListTile(
+                          leading: Icon(Icons.category),
+                          title: Text(suggestion[BRAND]),
+                        );
+                      },
+                      onSuggestionSelected: (suggestion) {
+                        setState(() {
+                          print(suggestion);
+                          _currentBrand = suggestion[BRAND];
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Center(
+              child: RaisedButton(
+                color: red,
+                textColor: white,
+                child: Text("Add Product"),
+                elevation: 1,
+                onPressed: () {},
+              ),
+            )
           ],
         ),
       ),
