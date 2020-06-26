@@ -85,6 +85,18 @@ class _AddProductState extends State<AddProduct> {
     });
   }
 
+  changeSelectedCategory(String selectedCategory) {
+    setState(() {
+      _currentCategory = selectedCategory;
+    });
+  }
+
+  changeSelectedBrand(String selectedBrand) {
+    setState(() {
+      _currentBrand = selectedBrand;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -190,6 +202,20 @@ class _AddProductState extends State<AddProduct> {
                     },
                   ),
                 ],
+              ),
+            ),
+            Center(
+              child: DropdownButton(
+                value: _currentCategory,
+                items: categoriesDropDown,
+                onChanged: changeSelectedCategory,
+              ),
+            ),
+            Center(
+              child: DropdownButton(
+                value: _currentBrand,
+                items: brandsDropDown,
+                onChanged: changeSelectedBrand,
               ),
             ),
           ],

@@ -14,10 +14,8 @@ class CategoryService {
         .setData({CATEGORY: name});
   }
 
-  Future<List<DocumentSnapshot>> getCategories() {
-    _firestore.collection(CATEGORIES).getDocuments().then((snaps) {
-      print(snaps.documents.length);
-      return snaps.documents;
-    });
-  }
+  Future<List<DocumentSnapshot>> getCategories() =>
+      _firestore.collection(CATEGORIES).getDocuments().then((snaps) {
+        return snaps.documents;
+      });
 }
