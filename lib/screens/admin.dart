@@ -204,7 +204,7 @@ class _AdminState extends State<Admin> {
               ListTile(
                 leading: Icon(Icons.add),
                 title: Text(
-                  "Add product",
+                  "Add Product",
                   style: TextStyle(color: Colors.black),
                 ),
                 onTap: () {
@@ -217,7 +217,7 @@ class _AdminState extends State<Admin> {
               ),
               ListTile(
                 leading: Icon(Icons.change_history),
-                title: Text("Products list"),
+                title: Text("Products List"),
                 onTap: () {},
               ),
               Divider(
@@ -225,7 +225,7 @@ class _AdminState extends State<Admin> {
               ),
               ListTile(
                 leading: Icon(Icons.add_circle),
-                title: Text("Add category"),
+                title: Text("Add Category"),
                 onTap: () {
                   _categoryAlert();
                 },
@@ -235,7 +235,7 @@ class _AdminState extends State<Admin> {
               ),
               ListTile(
                 leading: Icon(Icons.category),
-                title: Text("Category list"),
+                title: Text("Category List"),
                 onTap: () {},
               ),
               Divider(
@@ -243,7 +243,7 @@ class _AdminState extends State<Admin> {
               ),
               ListTile(
                 leading: Icon(Icons.add_circle_outline),
-                title: Text("Add brand"),
+                title: Text("Add Brand"),
                 onTap: () {
                   _brandAlert();
                 },
@@ -253,7 +253,7 @@ class _AdminState extends State<Admin> {
               ),
               ListTile(
                 leading: Icon(Icons.library_books),
-                title: Text("brand list"),
+                title: Text("Brand list"),
                 onTap: () {},
               ),
               Divider(),
@@ -287,11 +287,11 @@ class _AdminState extends State<Admin> {
             onPressed: () {
               if (categoryController.text.length != 0) {
                 _categoryService.createCategory(categoryController.text);
-                showToast("Category created successfully");
+                showLongToast("Category created successfully");
                 Navigator.pop(context);
               } else {
                 Navigator.pop(context);
-                showToast("Category field cannot be empty");
+                showLongToast("Category field cannot be empty");
               }
             },
             child: Text('ADD')),
@@ -327,10 +327,10 @@ class _AdminState extends State<Admin> {
               if (brandController.text.length > 0) {
                 _brandService.createBrand(brandController.text);
                 Navigator.pop(context);
-                showToast("Brand added successfully");
+                showLongToast("Brand added successfully");
               } else {
                 Navigator.pop(context);
-                showToast("Brand field cannot be empty");
+                showLongToast("Brand field cannot be empty");
               }
             },
             child: Text('ADD')),

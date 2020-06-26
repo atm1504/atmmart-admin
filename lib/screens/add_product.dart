@@ -3,6 +3,7 @@ import 'package:atmmartadmin/db/category.dart';
 import 'package:atmmartadmin/screens/admin.dart';
 import 'package:atmmartadmin/utils/colors.dart';
 import 'package:atmmartadmin/utils/constants.dart';
+import 'package:atmmartadmin/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -20,6 +21,9 @@ class _AddProductState extends State<AddProduct> {
   // Class initialization
   BrandService _brandService = BrandService();
   CategoryService _categoryService = CategoryService();
+
+  // Custom input validators
+  bool isProductNameOk = true;
 
   // List of brands and categories
   List<DocumentSnapshot> brands = <DocumentSnapshot>[];
@@ -95,6 +99,18 @@ class _AddProductState extends State<AddProduct> {
     setState(() {
       _currentBrand = selectedBrand;
     });
+  }
+
+  productNameChangedController(String name) {
+    if (name.length > 20 || name.length == 0) {
+      setState(() {
+        isProductNameOk = false;
+      });
+    } else {
+      setState(() {
+        isProductNameOk = true;
+      });
+    }
   }
 
   @override
@@ -180,9 +196,32 @@ class _AddProductState extends State<AddProduct> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    "Product Name",
-                    textAlign: TextAlign.start,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "Product Name",
+                        textAlign: TextAlign.start,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2, left: 10),
+                        child: Text(
+                          "Should be less than 20 characters",
+                          style: TextStyle(
+                              color: orange900,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    ],
+                  ),
+                  Visibility(
+                    visible: !isProductNameOk,
+                    child: Text(
+                      "Please Enter valid product name",
+                      style: TextStyle(color: red, fontSize: 18),
+                    ),
                   ),
                   TextFormField(
                     controller: productNameController,
@@ -194,29 +233,57 @@ class _AddProductState extends State<AddProduct> {
                       ),
                     ),
                     validator: (value) {
+                      print(value);
                       if (value.isEmpty) {
                         return "You must enter the product name";
                       } else if (value.length > 20) {
                         return "Product name must be less than 20 characters";
                       }
                     },
+                    onChanged: productNameChangedController,
                   ),
                 ],
               ),
             ),
-            Center(
-              child: DropdownButton(
-                value: _currentCategory,
-                items: categoriesDropDown,
-                onChanged: changeSelectedCategory,
-              ),
-            ),
-            Center(
-              child: DropdownButton(
-                value: _currentBrand,
-                items: brandsDropDown,
-                onChanged: changeSelectedBrand,
-              ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Category: ',
+                          style: TextStyle(color: red),
+                        ),
+                      ),
+                      DropdownButton(
+                        value: _currentCategory,
+                        items: categoriesDropDown,
+                        onChanged: changeSelectedCategory,
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Brand: ',
+                          style: TextStyle(color: red),
+                        ),
+                      ),
+                      DropdownButton(
+                        value: _currentBrand,
+                        items: brandsDropDown,
+                        onChanged: changeSelectedBrand,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
