@@ -4,6 +4,7 @@ import 'package:atmmartadmin/db/category.dart';
 import 'package:atmmartadmin/screens/admin.dart';
 import 'package:atmmartadmin/utils/colors.dart';
 import 'package:atmmartadmin/utils/constants.dart';
+import 'package:atmmartadmin/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -142,6 +143,7 @@ class _AddProductState extends State<AddProduct> {
     }
   }
 
+  // Allows the user to choose the source of image
   void _selectImageSource(int imageNumber) {
     Alert(
       context: context,
@@ -199,7 +201,7 @@ class _AddProductState extends State<AddProduct> {
     }
   }
 
-// Display image
+// Display image once selected
   Widget _displayChild(PickedFile image) {
     if (image == null) {
       return Padding(
@@ -214,8 +216,25 @@ class _AddProductState extends State<AddProduct> {
         File(image.path),
         fit: BoxFit.fill,
         width: double.infinity,
+        scale: 0.5,
         height: double.infinity,
       );
+    }
+  }
+
+  void validateAndUpload() {
+    if (_formKey.currentState.validate()) {
+      if (_image1 != null && _image2 != null && _image3 != null) {
+        if (selectedSizes.isNotEmpty) {
+          String imageUrl;
+          final String picture =
+              "${DateTime.now().millisecondsSinceEpoch.toString()}.jpg";
+        } else {
+          showWarningLongToast("Select atleast one size");
+        }
+      } else {
+        showWarningLongToast("Add all the three images");
+      }
     }
   }
 
@@ -252,10 +271,10 @@ class _AddProductState extends State<AddProduct> {
                 children: <Widget>[
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: OutlineButton(
                         borderSide: BorderSide(
-                            color: grey.withOpacity(0.8), width: 2.5),
+                            color: grey.withOpacity(0.8), width: 0.5),
                         onPressed: () {
 //                          _selectImage(1, "gallery");
                           _selectImageSource(1);

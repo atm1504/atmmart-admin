@@ -287,11 +287,11 @@ class _AdminState extends State<Admin> {
             onPressed: () {
               if (categoryController.text.length != 0) {
                 _categoryService.createCategory(categoryController.text);
-                showLongToast("Category created successfully");
+                showSuccessLongToast("Category created successfully");
                 Navigator.pop(context);
               } else {
                 Navigator.pop(context);
-                showLongToast("Category field cannot be empty");
+                showWarningLongToast("Category field cannot be empty");
               }
             },
             child: Text('ADD')),
@@ -327,10 +327,10 @@ class _AdminState extends State<Admin> {
               if (brandController.text.length > 0) {
                 _brandService.createBrand(brandController.text);
                 Navigator.pop(context);
-                showLongToast("Brand added successfully");
+                showSuccessLongToast("Brand added successfully");
               } else {
                 Navigator.pop(context);
-                showLongToast("Brand field cannot be empty");
+                showWarningLongToast("Brand field cannot be empty");
               }
             },
             child: Text('ADD')),
