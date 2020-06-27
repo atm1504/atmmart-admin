@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:atmmartadmin/db/brand.dart';
 import 'package:atmmartadmin/db/category.dart';
+import 'package:atmmartadmin/db/product.dart';
 import 'package:atmmartadmin/screens/admin.dart';
 import 'package:atmmartadmin/utils/colors.dart';
 import 'package:atmmartadmin/utils/constants.dart';
 import 'package:atmmartadmin/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
@@ -24,14 +26,17 @@ class _AddProductState extends State<AddProduct> {
   TextEditingController _categorySuggestionController = TextEditingController();
   TextEditingController _brandSuggestionController = TextEditingController();
   TextEditingController _quantityController = TextEditingController();
+  TextEditingController _priceController = TextEditingController();
 
   // Class initialization
   BrandService _brandService = BrandService();
   CategoryService _categoryService = CategoryService();
+  ProductService _productService = ProductService();
   ImagePicker _picker = ImagePicker();
 
   // Custom input validators
   bool isProductNameOk = true;
+  bool isLoading = false;
 
   // List of brands and categories
   List<DocumentSnapshot> brands = <DocumentSnapshot>[];
@@ -222,18 +227,60 @@ class _AddProductState extends State<AddProduct> {
     }
   }
 
-  void validateAndUpload() {
+  Future<void> validateAndUpload() async {
+    print("Validate form");
     if (_formKey.currentState.validate()) {
       if (_image1 != null && _image2 != null && _image3 != null) {
         if (selectedSizes.isNotEmpty) {
-          String imageUrl;
-          final String picture =
-              "${DateTime.now().millisecondsSinceEpoch.toString()}.jpg";
+          print("Inside");
+          // Downloadable image link
+          String imageUrl1;
+          String imageUrl2;
+          String imageUrl3;
+
+          // File name
+          final String pictureName1 =
+              "atm1${DateTime.now().millisecondsSinceEpoch.toString()}.jpg";
+          final String pictureName2 =
+              "atm2${DateTime.now().millisecondsSinceEpoch.toString()}.jpg";
+          final String pictureName3 =
+              "atm3${DateTime.now().millisecondsSinceEpoch.toString()}.jpg";
+
+          final FirebaseStorage storage = FirebaseStorage.instance;
+          StorageUploadTask task1 =
+              storage.ref().child(pictureName1).putFile(File(_image1.path));
+          StorageUploadTask task2 =
+              storage.ref().child(pictureName2).putFile(File(_image2.path));
+          StorageUploadTask task3 =
+              storage.ref().child(pictureName3).putFile(File(_image3.path));
+
+          StorageTaskSnapshot snapshot1 =
+              await task1.onComplete.then((value) => value);
+          StorageTaskSnapshot snapshot2 =
+              await task2.onComplete.then((value) => value);
+          task3.onComplete.then((snapshot3) async {
+            imageUrl1 = await snapshot1.ref.getDownloadURL();
+            imageUrl2 = await snapshot2.ref.getDownloadURL();
+            imageUrl3 = await snapshot3.ref.getDownloadURL();
+            List<String> imageList = [imageUrl1, imageUrl2, imageUrl3];
+
+            _productService.uploadProduct({
+              "name": _productNameController.text,
+              "price": double.parse(_priceController.text),
+              "sizes": selectedSizes,
+              "images": imageList,
+              "quantity": int.parse(_quantityController.text),
+              "brand": _currentBrand,
+              "category": _currentCategory
+            });
+          }).catchError((err) {
+            print(err);
+          });
         } else {
-          showWarningLongToast("Select atleast one size");
+          showLongWarningToast("Select at least one size!");
         }
       } else {
-        showWarningLongToast("Add all the three images");
+        showLongWarningToast("Add all the three images!");
       }
     }
   }
@@ -264,7 +311,7 @@ class _AddProductState extends State<AddProduct> {
         child: ListView(
           children: <Widget>[
             Container(
-              height: 210,
+              height: 180,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -273,8 +320,8 @@ class _AddProductState extends State<AddProduct> {
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: OutlineButton(
-                        borderSide: BorderSide(
-                            color: grey.withOpacity(0.8), width: 0.5),
+                        borderSide:
+                            BorderSide(color: grey.withOpacity(0.8), width: 1),
                         onPressed: () {
 //                          _selectImage(1, "gallery");
                           _selectImageSource(1);
@@ -288,7 +335,7 @@ class _AddProductState extends State<AddProduct> {
                       padding: const EdgeInsets.all(8.0),
                       child: OutlineButton(
                           borderSide: BorderSide(
-                              color: grey.withOpacity(0.8), width: 2.5),
+                              color: grey.withOpacity(0.8), width: 1),
                           onPressed: () {
                             _selectImageSource(2);
                           },
@@ -300,7 +347,7 @@ class _AddProductState extends State<AddProduct> {
                       padding: const EdgeInsets.all(8.0),
                       child: OutlineButton(
                           borderSide: BorderSide(
-                              color: grey.withOpacity(0.8), width: 2.5),
+                              color: grey.withOpacity(0.8), width: 1),
                           onPressed: () {
                             _selectImageSource(3);
                           },
@@ -499,24 +546,64 @@ class _AddProductState extends State<AddProduct> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: TextFormField(
-                controller: _quantityController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: 'Quantity',
+            Container(
+              height: 65,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+                child: TextFormField(
+                  controller: _quantityController,
+                  keyboardType: TextInputType.number,
+                  decoration:
+                      InputDecoration(hintText: '5', labelText: "Quantity"),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'You must enter the quantity';
+                    }
+                  },
                 ),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'You must enter the product name';
-                  }
-                },
+              ),
+            ),
+            Container(
+              height: 65,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        "Rs: ",
+                        style: TextStyle(
+                            color: red,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 12,
+                      child: TextFormField(
+                        controller: _priceController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            hintText: '200', labelText: "Price in Rupees"),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'You must enter the price';
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10),
-              child: Text('Available Sizes'),
+              padding: const EdgeInsets.only(left: 12, right: 12, top: 10),
+              child: Text(
+                'Available Sizes',
+                style: TextStyle(
+                    color: blue, fontWeight: FontWeight.bold, fontSize: 14),
+              ),
             ),
 
             Row(
@@ -611,7 +698,9 @@ class _AddProductState extends State<AddProduct> {
                 textColor: white,
                 child: Text("Add Product"),
                 elevation: 1,
-                onPressed: () {},
+                onPressed: () {
+                  validateAndUpload();
+                },
               ),
             )
           ],

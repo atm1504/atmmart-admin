@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:uuid/uuid.dart';
 
-showWarningLongToast(String mssg) {
+showLongWarningToast(String mssg) {
   Fluttertoast.showToast(
       msg: mssg,
       toastLength: Toast.LENGTH_LONG,
@@ -13,7 +13,7 @@ showWarningLongToast(String mssg) {
       fontSize: 16.0);
 }
 
-showSuccessLongToast(String mssg) {
+showLongSuccessToast(String mssg) {
   Fluttertoast.showToast(
       msg: mssg,
       toastLength: Toast.LENGTH_LONG,
@@ -24,7 +24,7 @@ showSuccessLongToast(String mssg) {
       fontSize: 16.0);
 }
 
-showWarningShortToast(String mssg) {
+showShortWarningToast(String mssg) {
   Fluttertoast.showToast(
       msg: mssg,
       toastLength: Toast.LENGTH_SHORT,
@@ -35,7 +35,7 @@ showWarningShortToast(String mssg) {
       fontSize: 16.0);
 }
 
-showSuccessShortToast(String mssg) {
+showShortSuccessToast(String mssg) {
   Fluttertoast.showToast(
       msg: mssg,
       toastLength: Toast.LENGTH_SHORT,
