@@ -1,3 +1,4 @@
+import 'package:atmmartadmin/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:uuid/uuid.dart';
@@ -49,4 +50,23 @@ showShortSuccessToast(String mssg) {
 String getUuid() {
   var id = Uuid();
   return id.v1();
+}
+
+Widget displayProgressBar(String mssg) {
+  return Center(
+      child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      CircularProgressIndicator(
+        backgroundColor: red,
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: Text(
+          mssg,
+          style: TextStyle(color: black, fontSize: 24),
+        ),
+      )
+    ],
+  ));
 }
