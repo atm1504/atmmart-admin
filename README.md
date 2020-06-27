@@ -17,4 +17,8 @@ The Admin App for the atmmart app. This is made using flutter!
 <td><img width="380" height="800"  src="https://user-images.githubusercontent.com/43731599/85859720-3d286600-b7db-11ea-9805-193fcf01a6d3.png"></td>
 <td><img width="380" height="800"  src="https://user-images.githubusercontent.com/43731599/85880246-52ac8880-b7f9-11ea-9890-0e0b99381757.png"></td>
 </tr>
+<tr>
+<td><img width="380" height="800"  src="https://user-images.githubusercontent.com/43731599/85926220-80f29c80-b8bb-11ea-83b7-0ece75598a10.png"></td>
+<td><img width="380" height="800"  src="https://user-images.githubusercontent.com/43731599/85926218-7c2de880-b8bb-11ea-8233-dcccfd374382.png"></td>
+</tr>
 </table>
